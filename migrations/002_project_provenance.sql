@@ -1,0 +1,1 @@
+ALTER TABLE publications ADD COLUMN generated_name INTEGER NOT NULL DEFAULT 0;

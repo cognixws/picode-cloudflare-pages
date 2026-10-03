@@ -1,0 +1,19 @@
+{
+  "name": "picode-cloudflare-pages",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "license": "Apache-2.0",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "build": "node scripts/build-ui.mjs",
+    "test": "node --test service.test.mjs test/*.test.mjs",
+    "check": "npm test"
+  },
+  "devDependencies": {
+    "esbuild": "0.25.12",
+    "zod": "4.4.3"
+  }
+}

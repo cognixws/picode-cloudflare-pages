@@ -1,0 +1,21 @@
+{
+  "id": "cloudflare-pages",
+  "name": "Cloudflare Pages",
+  "version": "0.1.0",
+  "apiVersion": 2,
+  "publisher": "COGNIXWS",
+  "description": "Publish static artifact versions to Cloudflare Pages, update them, restore a publication and remove the site.",
+  "process": { "command": "node", "args": ["${extensionDir}/server.mjs"] },
+  "activation": { "instance": true },
+  "permissions": ["artifacts:read", "artifacts:export", "events:publish"],
+  "settings": [
+    {"key": "account_id", "label": "Cloudflare account ID", "type": "text", "required": true},
+    {"key": "api_token", "label": "Cloudflare API token", "type": "secret", "required": true, "description": "Cloudflare Pages Edit permission for this account."}
+  ],
+  "storage": { "migrations": "migrations" },
+  "ui": { "pages": [{ "id": "publications", "title": "Publications", "path": "ui/index.html" }] },
+  "contributes": {
+    "commands": [{ "id": "publish", "title": "Publish to Cloudflare Pages…", "page": "publications" }],
+    "menus": { "artifact": ["publish"] }
+  }
+}
