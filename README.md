@@ -81,3 +81,9 @@ site lives under Site settings and reviews the entire dedicated project. An
 uncertain result offers Check result before another operation. A blocked or
 failed load ends the loading skeleton. Save settings is performed by PiCode's
 generic configuration page; it does not claim a successful connection.
+
+## Icon attribution
+
+`ui/cloudflare.png` is Cloudflare’s official application icon, downloaded from
+https://dash.cloudflare.com/apple-touch-icon-152x152.png. The Cloudflare name
+and logo belong to Cloudflare; the extension is independently maintained.

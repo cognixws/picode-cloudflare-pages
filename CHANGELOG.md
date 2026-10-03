@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.1
+
+- Use Cloudflare’s official application icon in the extension and as the Publications favicon.
+
 ## 0.2.0
 
 - Organize publishing around the selected artifact, public version and site history.
