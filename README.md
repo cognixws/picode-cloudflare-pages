@@ -3,9 +3,11 @@
 An independently maintained [PiCode](https://github.com/cognixws/picode) extension
 for static artifact versions. Requires PiCode
 with ADR-0249 and Node.js 24 (built-in SQLite). In PiCode, open **Extensions → Install extension**, paste
-`https://github.com/cognixws/picode-cloudflare-pages`, review and install; no npm install or build runs during installation. Enable
-This instance, enter account ID and an API token with Cloudflare Pages Edit,
-and open an artifact's Actions → Publish to Cloudflare Pages.
+`https://github.com/cognixws/picode-cloudflare-pages`, review and install; no npm install or build runs during installation. Open Configuration, enter account ID and an API token with Cloudflare Pages Edit,
+and save. Open Publications and choose Check connection. The read-only account
+check verifies project-list access, not write permission. Then open an artifact's
+Actions → Publish to Cloudflare Pages; its exact version is selected. A custom
+project name is optional under Advanced options.
 
 The owner chooses a version and optionally a project name. Every artifact gets
 one dedicated Direct Upload project. The extension never attaches an existing
@@ -64,3 +66,18 @@ A PiCode release supporting ADR-0249 is required before installation.
 
 Apache-2.0, matching the other CognixWS PiCode extensions. Third-party MIT notices
 are retained under `vendor/`.
+
+## GUI v2
+
+The connection notice distinguishes missing settings, unchecked settings,
+verified account access and rejected credentials. The check is a GET to the
+account's Pages project list and creates no remote resources. Its result is kept
+in process memory and invalidated when credentials change or the process
+restarts. Tokens and their fingerprints never reach the page.
+
+Each site shows its last confirmed public version, URL, update choice and
+history. Restore reviews a successful production deployment. Remove public
+site lives under Site settings and reviews the entire dedicated project. An
+uncertain result offers Check result before another operation. A blocked or
+failed load ends the loading skeleton. Save settings is performed by PiCode's
+generic configuration page; it does not claim a successful connection.

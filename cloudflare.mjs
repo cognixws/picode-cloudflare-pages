@@ -32,6 +32,10 @@ export class Cloudflare {
   }
   return data;
  }
+ async checkConnection() {
+  const r=await this.call(`/accounts/${this.account}/pages/projects?per_page=1`);
+  if(!Array.isArray(r.result))throw new RemoteError("Cloudflare returned an unreadable project list.");
+ }
  async getProject(name) { try{return (await this.call(this.projectPath(name))).result;}catch(e){if(e.status===404)return null;throw e;} }
  async createProject(name) {return (await this.call(`/accounts/${this.account}/pages/projects`,{method:"POST",body:{name,production_branch:"main"}})).result;}
  async deployments(name) {

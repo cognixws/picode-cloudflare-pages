@@ -13,7 +13,7 @@ function publicURL(raw) {
 
 export class PagesService {
  constructor({db,host,remote,emit=async()=>{}}) {
-  this.db=db;this.host=host;this.remote=remote;this.emit=emit;this.running=new Set();this.closing=false;
+  this.db=db;this.host=host;this.remote=remote;this.emit=emit;this.running=new Set();this.closing=false;this.connectionCheck=null;this.checkGeneration=0;
   db.exec("PRAGMA foreign_keys=ON; PRAGMA busy_timeout=5000; PRAGMA journal_mode=WAL;");
  }
  pub(id) {return this.db.prepare("SELECT * FROM publications WHERE id=?").get(id);}
@@ -25,9 +25,25 @@ export class PagesService {
  async state() {
   let artifacts=[],error="";try{artifacts=(await this.host("/artifacts")).artifacts||[];}catch{error="Artifacts could not be loaded. Retry.";}
   const pubs=this.db.prepare("SELECT * FROM publications ORDER BY created_at DESC").all();
-  return {artifacts,error,publications:pubs.map(p=>({...p,identity:undefined,hasProject:!!p.identity,latestVersion:artifacts.find(a=>a.id===p.artifact_id)?.liveVersion||null,history:this.db.prepare("SELECT * FROM deployments WHERE publication_id=? ORDER BY created_at DESC").all(p.id),operations:this.db.prepare("SELECT id,action,version,status,error,updated_at FROM operations WHERE publication_id=? ORDER BY created_at DESC LIMIT 20").all(p.id)}))};
+  return {artifacts,error,connection:await this.connectionState(),publications:pubs.map(p=>({...p,identity:undefined,hasProject:!!p.identity,latestVersion:artifacts.find(a=>a.id===p.artifact_id)?.liveVersion||null,history:this.db.prepare("SELECT * FROM deployments WHERE publication_id=? ORDER BY created_at DESC").all(p.id),operations:this.db.prepare("SELECT id,action,version,status,error,updated_at FROM operations WHERE publication_id=? ORDER BY created_at DESC LIMIT 20").all(p.id)}))};
  }
  async configuration() {const r=await this.host("/settings");return {account:r.values?.account_id,token:r.secrets?.api_token};}
+ // A read-only account check never proves write permission or publishes a site.
+ async connectionState() {
+  const c=await this.configuration();
+  if(!c.account||!c.token)return {status:"not-configured"};
+  if(this.connectionCheck?.fingerprint===digest(c))return {...this.connectionCheck,fingerprint:undefined};
+  return {status:"unchecked"};
+ }
+ async checkConnection() {
+  const c=await this.configuration(),generation=++this.checkGeneration;
+  if(!c.account||!c.token)throw new RemoteError("Configure the Cloudflare account and API token.",409);
+  let result={status:"ready",checkedAt:now(),message:"Account access verified. Publishing requires Pages Edit permission."};
+  try {await this.remote(c.account,c.token).checkConnection();}
+  catch(e) {result={status:"error",checkedAt:now(),retryable:![400,401,403,409].includes(e.status),message:e instanceof RemoteError?e.message:"Cloudflare could not be reached. Check the connection again."};}
+  if(generation===this.checkGeneration)this.connectionCheck={...result,fingerprint:digest(c)};
+  await this.event();return this.connectionState();
+ }
  async cloud(p) {
   const c=await this.configuration();if(c.account!==p.account_id)throw new RemoteError("This publication belongs to another Cloudflare account. Restore its account in settings.",409);
   return this.remote(c.account,c.token);

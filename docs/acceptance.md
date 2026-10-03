@@ -33,6 +33,17 @@ Screenshots were read in a subagent and settled overlay audits passed.
 Desktop and phone artifact actions preserved the explicitly selected versions.
 Computed JavaScript resources need runtime acceptance.
 
+## GUI v2 browser evidence
+
+Scratch QA on 2026-10-03 used the real PiCode host, process relay and owner
+confirmation with a test-only Cloudflare adapter. Desktop configuration at
+1366×768 kept fields and Save above the fold; switching to Access retained
+unsaved values. Mobile 360px light/dark views covered configuration and
+publication confirmations. Publish v1, update v2, restore v1 and remove passed;
+progress remained visible and removed sites had no dead URL actions. Screenshot
+review and settled host overlay audits passed. Remote provider calls were
+simulated; this does not establish production Cloudflare acceptance.
+
 ## Open acceptance
 
 - Real Cloudflare account: publish/update/restore/remove and verify all known URLs.
@@ -42,3 +53,20 @@ Computed JavaScript resources need runtime acceptance.
 
 Disabling, uninstalling and local artifact deletion never implicitly delete
 remote resources. Backups restore local history; they do not undo remote effects.
+
+## GUI v2 connection decision table
+
+| Conditions | Action/status | Evidence |
+|---|---|---|
+| Account/token missing | Configure connection; check has no remote call | `test/connection.test.mjs` |
+| Credentials saved, no current check | Check connection; unchecked | `test/connection.test.mjs` |
+| Account project-list read succeeds | Account access verified; no write-permission claim | `test/connection.test.mjs` |
+| Credentials rotated | Invalidate previous check | `test/connection.test.mjs` |
+| Provider denies access or response is invalid | Sanitized error; Edit connection | `test/connection.test.mjs` |
+| Instance off/process unavailable | Error and settings action; no persistent skeleton | browser QA |
+| Lost remote operation response | Check result; never duplicate an effect | existing lifecycle tests |
+
+GUI ownership and documentary adaptations: VS Code extension settings, Netlify
+Drop's input-to-URL path, Cloudflare Direct Upload, Vercel per-site deployment
+history, and PiCode's existing Cursor density/tokens. The owner-approved proposal
+is PiCode artifact `cloudflare-pages-gui-v2-benchmar-4b209f`.

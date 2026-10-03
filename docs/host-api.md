@@ -33,3 +33,10 @@ cannot supply this header.
 
 Extension processes are trusted local programs, not sandboxed processes. The
 page never receives credentials, artifact packages or direct network access.
+
+GUI v2 uses the existing relay for POST `/connection/check` and GET `/state`.
+The latter includes connection status and sanitized check messages only. The
+process obtains credentials through the Host API, checks the account project
+list with a GET, and keeps a private credential fingerprint in memory. A check
+never creates a project or proves write permission. Original artifact/version
+context continues through the existing host context; no protocol door is added.
