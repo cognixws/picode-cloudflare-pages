@@ -41,9 +41,9 @@ export class Cloudflare {
  async deployments(name) {
   const all=[];
   for(let page=1;page<=100;page++) {
-   const r=await this.call(this.projectPath(name)+`/deployments?per_page=100&page=${page}`);
+   const r=await this.call(this.projectPath(name)+`/deployments?per_page=25&page=${page}`);
    const list=r.result||[];all.push(...list);
-   if(list.length<100 || (r.result_info?.total_pages && page>=r.result_info.total_pages))return all;
+   if(list.length<25 || (r.result_info?.total_pages && page>=r.result_info.total_pages))return all;
   }
   throw new RemoteError("Too many deployments to review safely. Open Cloudflare to review this project.",409);
  }
@@ -70,4 +70,18 @@ export class Cloudflare {
  async createDeployment(name,form) {return (await this.call(this.projectPath(name)+"/deployments",{method:"POST",body:form})).result;}
  async rollback(name,id) {return (await this.call(this.projectPath(name)+"/deployments/"+encodeURIComponent(id)+"/rollback",{method:"POST"})).result;}
  async remove(name) {await this.call(this.projectPath(name),{method:"DELETE"});}
+ async rumSites() {
+  const all=[];
+  for(let page=1;page<=20;page++) {
+   const r=await this.call(`/accounts/${this.account}/rum/site_info/list?per_page=50&page=${page}`);
+   const list=r.result||[];all.push(...list);
+   if(list.length<50)return all;
+  }
+  throw new RemoteError("Too many Web Analytics sites to review safely.",409);
+ }
+ async createRumSite(host) {return (await this.call(`/accounts/${this.account}/rum/site_info`,{method:"POST",body:{host}})).result;}
+ async deleteRumSite(tag) {await this.call(`/accounts/${this.account}/rum/site_info/${encodeURIComponent(tag)}`,{method:"DELETE"});}
+ // The whole build configuration is sent back so the PATCH cannot drop fields
+ // it does not know about; Direct Upload projects only carry analytics fields.
+ async setAnalytics(name,buildConfig) {return (await this.call(this.projectPath(name),{method:"PATCH",body:{build_config:buildConfig}})).result;}
 }

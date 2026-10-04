@@ -133,3 +133,75 @@ No core refactor or new host permission is required for this release.
 
 The final suite passed 48 tests; the Access 403 cleanup recovery test covers the
 post-Pages-delete uncertainty boundary separately from browser geometry QA.
+
+## Web Analytics decision table (0.4.0)
+
+| Conditions | Action | Evidence |
+|---|---|---|
+| Publish with analytics (UI default) | RUM site ensured by hostname, project analytics written, tag recorded, dashboard link exposed | `test/analytics.test.mjs` |
+| Update without an explicit choice | Preserve current analytics | `test/analytics.test.mjs` |
+| Explicit off during publish | Clear project configuration and recorded tag | `test/analytics.test.mjs` |
+| Site-only analytics toggle | Owner-confirmed, no deployment, idempotent when unchanged | `test/analytics.test.mjs` |
+| Analytics configured outside the extension | Refuse; never overwrite | `test/analytics.test.mjs` |
+| Lost RUM create response | Adopt by hostname; never create twice | `test/analytics.test.mjs` |
+| Token lacks Account Settings | Connection reports unavailable with a sanitized message | `test/connection.test.mjs` |
+| Remove site | Analytics entry deleted; lost delete holds, Check result settles by absence | `test/analytics.test.mjs` |
+| Real account, disposable project (probe 2026-10-04) | Plain-host RUM create returns tag/token; PATCH stores both; beacon injected into the deployment created after enabling; `null` clears; injection is per-deployment (clearing leaves the current publication reporting until republished); `DELETE /rum/site_info/{tag}` works as `dispose` uses it | browser session probe, this date |
+| Dashboard visit counts and an extension-driven real pilot | Still open | acceptance debt |
+
+## Address change decision table (0.4.0)
+
+| Conditions | Action | Evidence |
+|---|---|---|
+| Public published site, free new name | Publish current version to the new project, verify, swap records, remove old | `test/rename.test.mjs` |
+| Restricted site or uncertain Access state | Refuse before any effect | `test/rename.test.mjs` |
+| Name in use, invalid, or unchanged | Refuse at prepare | `test/rename.test.mjs` |
+| Production version changed after review | Refuse; prepare again | `test/rename.test.mjs` |
+| Lost new-project creation response | Adopt only a fresh, extension-shaped project; hold otherwise | `test/rename.test.mjs` |
+| Old-project delete lost or refused | Hold; never repeat; Check result settles by absence | `test/rename.test.mjs` |
+| New deployment fails | Retain the old site and record; the prepared project stays for review | `test/rename.test.mjs` |
+| Real addresses, dashboards and history | Pilot 2026-10-04: change address ran on real projects (old address retired, new address live with the beacon, dashboard link resolved); long-lived dashboard history for renamed sites still unobserved | acceptance debt |
+
+## Real pilot findings and motion rebuild (2026-10-04)
+
+The suite passes 66 tests: the 48 from 0.3.0 unchanged, plus analytics, rename,
+migration 005 and connection-capability coverage.
+
+A real-account pilot (owner token, disposable artifact, production instance
+updated from this branch) exercised publish with analytics, the dashboard link
+(a live pageview load), change address and remove. It caught two defects the
+mocks could not, both fixed: the deployments listing called the API with
+`per_page=100`, which the real endpoint refuses with HTTP 400 (now 25), and a
+rename whose new deployment was still activating failed instead of waiting in
+`verifying` for tick/reconcile (regression test added). The publication motion
+was rebuilt on the benchmark pattern (phase dots, determinate per-file upload
+bar, sliding edge line, reduced-motion honored) after the owner rejected the
+old single-block sweep; upload progress is tracked per file into the operation
+row. The mobile 360px view renders the full form and card, but synthetic
+input into the sandboxed iframe was not routed by the mobile shell, so mobile
+interaction remains covered only by the shared desktop code path. One host-side
+oddity was observed after the update (the extension artifact list briefly
+returned a single page artifact while the owner route listed all 64); it did
+not reproduce on retry and is recorded for the host maintainers. The pilot
+site, artifact and simulator were removed; legacy sites were untouched.
+
+## Browser evidence (0.4.0)
+
+On 2026-10-04, scratch QA used the real PiCode host (instance `cfpages-v2`,
+0.4.0 installed from the worktree package, database version 4 confirmed after
+install) with the real process relay, owner-confirmation bridge and a
+temporary in-memory Cloudflare simulator (persistent across process restarts;
+removed with the scratch). Verified: connection check including the analytics
+capability; publish with analytics on creating the RUM site and writing the
+project configuration; update preserving analytics; site-only disable with the
+per-deployment wording and re-enable; the View analytics dashboard link;
+change address end to end (danger confirmation naming the retiring address and
+deployment URLs, old project removed, new analytics adopted, history moved);
+remove deleting the site and its analytics entry; removed and empty states.
+Desktop light and dark passed (overlay audit ok, control heights aligned).
+Two defects found and fixed in this release: the publish form did not send
+the analytics choice, and the address editor's submit button stayed disabled
+while typing. The mobile 360px view rendered the full form and card; mobile
+interaction could not be driven because the mobile shell did not route
+synthetic input into the sandboxed iframe — the page code is identical to the
+verified desktop path, and physical-phone acceptance remains tracked below.

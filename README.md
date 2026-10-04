@@ -3,8 +3,8 @@
 An independently maintained [PiCode](https://github.com/cognixws/picode) extension
 for static artifact versions. Requires PiCode
 with ADR-0249 and Node.js 24 (built-in SQLite). In PiCode, open **Extensions → Install extension**, paste
-`https://github.com/cognixws/picode-cloudflare-pages`, review and install; no npm install or build runs during installation. Open Configuration, enter account ID and an API token with Cloudflare Pages Edit,
-and save. Open Publications and choose Check connection. The read-only account
+`https://github.com/cognixws/picode-cloudflare-pages`, review and install; no npm install or build runs during installation. Open Configuration, enter account ID and an API token with Cloudflare Pages Edit
+and — for Web Analytics — Account Settings Read and Write, and save. Open Publications and choose Check connection. The read-only account
 check verifies project-list access, not write permission. Then open an artifact's
 Actions → Publish to Cloudflare Pages; its exact version is selected. A custom
 project name is optional under Advanced options.
@@ -59,7 +59,7 @@ Pages and keeps its adapter separate.
 The extension calls only the versioned Host API and sandbox bridge documented in
 [docs/host-api.md](docs/host-api.md). The ID remains `cloudflare-pages`; replacing
 the package source preserves PiCode enablement, settings, secrets and the
-extension database. Migrations 001 and 002 and the process/UI paths are unchanged; migration 003 adds access state.
+extension database. Migrations 001–004 and the process/UI paths are unchanged; migration 005 adds Web Analytics state on top of the custom-domains schema.
 A PiCode release supporting ADR-0249 is required before installation.
 
 ## License
@@ -121,3 +121,23 @@ external changes in Cloudflare are not monitored continuously. Content previousl
 published publicly may already have been copied. See the
 [security decision](docs/decisions/001-restricted-publications.md) and
 [acceptance table](docs/acceptance.md) for recovery and remaining real-account QA.
+
+## Web Analytics and address changes (0.4.0)
+
+Publications enable Web Analytics by default; the publish form and Site settings
+control it per site. Enabling adopts or creates the analytics site by hostname,
+writes the project's analytics configuration and records the analytics tag, so
+Cloudflare injects its privacy-first beacon from the next publication; the
+current publication counts after it is published again. A site with analytics
+shows **View analytics**, which opens the project's page in the Cloudflare
+dashboard. A configuration written outside this extension is reported, never
+overwritten. Removing a site also removes its analytics entry; a lost delete
+holds with Check result and settles by absence.
+
+**Change address** publishes the current version to a new dedicated project,
+verifies it, then removes the old project: the old `pages.dev` address and its
+deployment URLs stop working and version history moves to the new address.
+Restricted sites cannot change address; remove and publish again instead. An
+uncertain old-project delete is never repeated — Check result settles it once
+the old project is gone, and removals done elsewhere in Cloudflare are detected,
+not duplicated.

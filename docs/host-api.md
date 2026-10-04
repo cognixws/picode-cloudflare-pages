@@ -41,6 +41,13 @@ list with a GET, and keeps a private credential fingerprint in memory. A check
 never creates a project or proves write permission. Original artifact/version
 context continues through the existing host context; no protocol door is added.
 
+Web Analytics and address changes use only the same process/confirmation doors.
+`/prepare` accepts `analytics:boolean` on publish, action `analytics` with
+`{publicationId,analytics:boolean}` and action `rename` with
+`{publicationId,projectName}`. `/state` exposes a per-publication `analytics`
+object with the dashboard URL and the connection check reports the analytics
+capability; no new protocol door is added.
+
 Restricted access uses only the same process/confirmation doors. POST
 `/access/check` is a read-only organization/OTP/app-list check; POST
 `/access/verify` with `publicationId` checks policy and anonymous site redirects.

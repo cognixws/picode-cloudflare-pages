@@ -1,10 +1,10 @@
 {
   "id": "cloudflare-pages",
   "name": "Cloudflare Pages",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "apiVersion": 2,
   "publisher": "COGNIXWS",
-  "description": "Publish artifact versions to Cloudflare Pages with public or email-restricted access, update, restore and remove sites.",
+  "description": "Publish artifact versions to Cloudflare Pages with public or email-restricted access, Web Analytics, a dashboard analytics link, address changes, update, restore and remove sites.",
   "process": {
     "command": "node",
     "args": [
@@ -31,7 +31,7 @@
       "label": "Cloudflare API token",
       "type": "secret",
       "required": true,
-      "description": "Cloudflare Pages Edit permission for this account."
+      "description": "Cloudflare Pages Edit for this account. For Web Analytics it also needs Account Settings Read and Write."
     },
     {
       "key": "access_api_token",

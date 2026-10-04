@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.4.0
+
+- Add Web Analytics: enabled from the publish form or Site settings, with a View analytics link into the project's dashboard analytics.
+- Add Change address: publish the current version to a new project name, verify it, then retire the old address and its deployment URLs.
+- The connection check reports Web Analytics capability; it needs Account Settings Read and Write on the token.
+- Removal now also deletes the site's Web Analytics entry; a lost delete holds with Check result.
+
 ## 0.3.0
 
 - Add Public and Restricted by exact email, using Cloudflare Access and email codes.
