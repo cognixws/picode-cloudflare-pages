@@ -24,3 +24,7 @@ header p{margin:0}header h1{margin:0 0 4px}.notice{display:flex;justify-content:
 .operation.is-busy:after{content:"";position:absolute;left:0;right:0;bottom:0;height:2px;background:repeating-linear-gradient(90deg,var(--pc-accent) 0 10px,transparent 10px 20px);animation:edgeslide .9s linear infinite;opacity:.55}
 @keyframes edgeslide{to{background-position:20px 0}}
 @media(prefers-reduced-motion:reduce){.operation.is-busy:after,.op-track i.on{animation:none}.op-bar i{transition:none}}
+
+/* Removed sites stay out of the way until asked. */
+.panel.site.is-removed{opacity:.7}
+@media(prefers-reduced-motion:reduce){.panel.site.is-removed{opacity:.85}}

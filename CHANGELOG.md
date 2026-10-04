@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.4.1
+
+- Removed sites stay hidden behind a "Show removed" toggle and render muted.
+
 ## 0.4.0
 
 - Add Web Analytics: enabled from the publish form or Site settings, with a View analytics link into the project's dashboard analytics.

@@ -1,7 +1,7 @@
 {
   "id": "cloudflare-pages",
   "name": "Cloudflare Pages",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "apiVersion": 2,
   "publisher": "COGNIXWS",
   "description": "Publish artifact versions to Cloudflare Pages with public or email-restricted access, Web Analytics, a dashboard analytics link, address changes, update, restore and remove sites.",
@@ -57,7 +57,7 @@
     "commands": [
       {
         "id": "publish",
-        "title": "Publish to Cloudflare Pages\u2026",
+        "title": "Publish to Cloudflare Pages…",
         "page": "publications"
       }
     ],
