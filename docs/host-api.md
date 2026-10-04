@@ -40,3 +40,13 @@ process obtains credentials through the Host API, checks the account project
 list with a GET, and keeps a private credential fingerprint in memory. A check
 never creates a project or proves write permission. Original artifact/version
 context continues through the existing host context; no protocol door is added.
+
+Restricted access uses only the same process/confirmation doors. POST
+`/access/check` is a read-only organization/OTP/app-list check; POST
+`/access/verify` with `publicationId` checks policy and anonymous site redirects.
+`/prepare` accepts optional `{mode:"public"|"restricted", emails:[...]}` as `access`
+for Publish, and action `access` with `publicationId` for a site-only access change.
+Restore and removal cannot override access settings. The immutable owner-reviewed
+revision includes desired access, domains and the current Access policy snapshot.
+`/state` exposes mode, readers, verified time and sanitized setup status; tokens,
+private credential fingerprints and Access resource IDs stay in the process.

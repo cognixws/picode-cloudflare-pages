@@ -27,7 +27,7 @@ export class Cloudflare {
   let data;try{data=await res.json();}catch{throw new RemoteError("Cloudflare returned an unreadable response.");}
   if(!res.ok || data.success===false) {
    // Do not reflect provider messages: they may echo request data or tokens.
-   const message=res.status===401||res.status===403?"Cloudflare refused the token. Check its account and Pages Edit permission.":res.status===429?"Cloudflare is busy. Check the operation again shortly.":res.status===404?"The Cloudflare resource was not found.":"Cloudflare refused the request (HTTP "+res.status+").";
+   const message=res.status===401||res.status===403?"Cloudflare refused the token. Check its account and required API permissions.":res.status===429?"Cloudflare is busy. Check the operation again shortly.":res.status===404?"The Cloudflare resource was not found.":"Cloudflare refused the request (HTTP "+res.status+").";
    throw new RemoteError(message,res.status);
   }
   return data;

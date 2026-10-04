@@ -32,6 +32,8 @@ const server=http.createServer(async(req,res)=>{
   const path=new URL(req.url,"http://localhost").pathname;
   let body={};if(req.method==="POST"){let text="";for await(const b of req){text+=b;if(text.length>16<<10)throw new RemoteError("Request too large.",400);}try{body=JSON.parse(text||"{}");}catch{throw new RemoteError("Invalid request.",400);}}
   if(req.method==="POST"&&path==="/connection/check")return send(200,await service.checkConnection());
+  if(req.method==="POST"&&path==="/access/check")return send(200,await service.checkAccessSetup());
+  if(req.method==="POST"&&path==="/access/verify")return send(200,await service.checkAccess(body.publicationId));
   if(req.method==="GET"&&path==="/state")return send(200,await service.state());
   if(req.method==="GET"&&path.startsWith("/artifacts/"))return send(200,await service.source(decodeURIComponent(path.slice(11))));
   if(req.method==="POST"&&path==="/prepare")return send(201,await service.prepare(body));

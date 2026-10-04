@@ -59,7 +59,7 @@ Pages and keeps its adapter separate.
 The extension calls only the versioned Host API and sandbox bridge documented in
 [docs/host-api.md](docs/host-api.md). The ID remains `cloudflare-pages`; replacing
 the package source preserves PiCode enablement, settings, secrets and the
-extension database. Migrations 001 and 002 and the process/UI paths are unchanged.
+extension database. Migrations 001 and 002 and the process/UI paths are unchanged; migration 003 adds access state.
 A PiCode release supporting ADR-0249 is required before installation.
 
 ## License
@@ -75,8 +75,8 @@ account's Pages project list and creates no remote resources. Its result is kept
 in process memory and invalidated when credentials change or the process
 restarts. Tokens and their fingerprints never reach the page.
 
-Each site shows its last confirmed public version, URL, update choice and
-history. Restore reviews a successful production deployment. Remove public
+Each site shows its last confirmed version and access, URL, update choice and
+history. Restore reviews a successful production deployment. Remove
 site lives under Site settings and reviews the entire dedicated project. An
 uncertain result offers Check result before another operation. A blocked or
 failed load ends the loading skeleton. Save settings is performed by PiCode's
@@ -87,3 +87,37 @@ generic configuration page; it does not claim a successful connection.
 `ui/cloudflare.png` is Cloudflare’s official application icon, downloaded from
 https://dash.cloudflare.com/apple-touch-icon-152x152.png. The Cloudflare name
 and logo belong to Cloudflare; the extension is independently maintained.
+
+## Public and Restricted access (0.3.0)
+
+Choose **Public** or **Restricted by email** in the publication form. Existing
+sites default to Public. For Restricted, enter 1–50 exact email addresses; readers
+sign in with an email code. **Site settings → Change access** changes readers or
+makes a site public without deploying another artifact version. Update and Restore
+preserve the current access settings. Making a restricted site Public requires a
+danger confirmation covering previous deployment URLs. Changing readers revokes
+existing sessions, so allowed readers sign in again.
+
+To configure Restricted:
+
+1. Set up a [Cloudflare Zero Trust organization](https://one.dash.cloudflare.com/)
+   and enable **One-time PIN** in its login methods.
+2. Create a separate account-scoped token with **Access: Apps and Policies Write**
+   and **Access: Organizations, Identity Providers, and Groups Read**.
+3. Save it in PiCode's **Cloudflare Access API token (optional)** secret setting.
+   Keep the existing Pages token. Choose Restricted and **Check restricted access**.
+   This check verifies organization/login reads, not write permission.
+
+The extension protects the production root, wildcard preview/alias hostnames and
+all custom domains reported by Pages, before uploading. It refuses overlapping
+Access apps, policy drift and unverified protection. Propagation may leave an
+operation at **Check result**; no new content is sent until protection is verified.
+A lost Access creation response or uncertain delete can require manual review;
+never delete protection on a surviving site to clear a held operation.
+
+**Check access** verifies current policy and anonymous redirects, including known
+previous URLs. The card shows the last check time. These are explicit checks;
+external changes in Cloudflare are not monitored continuously. Content previously
+published publicly may already have been copied. See the
+[security decision](docs/decisions/001-restricted-publications.md) and
+[acceptance table](docs/acceptance.md) for recovery and remaining real-account QA.

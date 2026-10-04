@@ -1,10 +1,10 @@
 {
   "id": "cloudflare-pages",
   "name": "Cloudflare Pages",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "apiVersion": 2,
   "publisher": "COGNIXWS",
-  "description": "Publish static artifact versions to Cloudflare Pages, update them, restore a publication and remove the site.",
+  "description": "Publish artifact versions to Cloudflare Pages with public or email-restricted access, update, restore and remove sites.",
   "process": {
     "command": "node",
     "args": [
@@ -32,6 +32,13 @@
       "type": "secret",
       "required": true,
       "description": "Cloudflare Pages Edit permission for this account."
+    },
+    {
+      "key": "access_api_token",
+      "label": "Cloudflare Access API token (optional)",
+      "type": "secret",
+      "required": false,
+      "description": "For Restricted sites: Access Apps and Policies Write, plus Access Organizations, Identity Providers, and Groups Read, scoped to this account. Set up Zero Trust and One-time PIN first."
     }
   ],
   "storage": {

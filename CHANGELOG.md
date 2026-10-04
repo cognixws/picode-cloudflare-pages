@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.3.0
+
+- Add Public and Restricted by exact email, using Cloudflare Access and email codes.
+- Protect production, previews/aliases and custom domains before upload; verify policies and anonymous access.
+- Change readers independently of artifact versions, revoke sessions, preserve access on updates/restores and confirm Public changes explicitly.
+- Keep existing sites Public on upgrade; hold uncertain Access effects without repeating writes.
+
+
 ## 0.2.1
 
 - Use Cloudflare’s official application icon in the extension and as the Publications favicon.
