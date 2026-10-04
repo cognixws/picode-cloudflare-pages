@@ -124,7 +124,7 @@ is PiCode artifact `cloudflare-pages-gui-v2-benchmar-4b209f`.
 | Pages already deleted + Access cleanup returns 403 | Hold unknown/protecting; retry only Access cleanup after authorization recovers, without repeating Pages deletion | `test/access.test.mjs` |
 | Remote domains/policy change after review | Refuse mutation/upload | `test/access.test.mjs` |
 | Upgrade with interrupted create/deploy | Preserve correct recovery phase and history | `test/migration.test.mjs` |
-| Real Access allowlisted/disallowed reader, OTP, custom domain and session revocation | Not established by mocks; real pilot pending credentials | acceptance debt |
+| Real Access OTP, allowlisted reader policy, session revocation, restricted→public and removal cleanup | Real pilot 2026-10-04 (owner credentials): One-time PIN enabled, restricted publish held `unknown` until edge propagation then completed with protection verified before upload, reader change updated policy and revoked sessions, public change removed the app and confirmed anonymous 200, remove cleaned the analytics/Access state (`access_app=null`) | real pilot, this date; interactive OTP login by the owner and custom domains remain open | acceptance debt |
 
 Account permissions, OTP setup, allowed and denied login, real edge propagation
 and revocation still require owner-assisted Cloudflare acceptance. Automated

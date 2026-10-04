@@ -61,3 +61,16 @@ deployment created after enabling serves the injected `beacon.min.js`; `null`
 clears and reads back; injection is per-deployment, so a disabled site keeps
 reporting until republished; `DELETE /rum/site_info/{tag}` matches the
 extension's dispose.
+
+Restricted real pilot (same day, disposable artifact, cleaned up): One-time PIN
+enabled (the new Cloudflare One IA keeps IdPs under Reusable components →
+Identity providers; the extension check correctly refused until it was added).
+Restricted publish created the Access app, held `unknown` until edge
+propagation (~2 min), then completed with protection verified before upload —
+real 302s on root and wildcard confirmed by curl. Reader change updated policy
+and revoked sessions; public change (danger) removed the app and confirmed
+anonymous 200; remove cleaned Access state (`access_app=null`). The interactive
+OTP login by the owner was not completed (synthetic input limits); custom
+domains remain unexercised. Production runs 0.4.1 from main; the
+custom-domains pilot package was replaced on the owner's decision (schema and
+data preserved).
